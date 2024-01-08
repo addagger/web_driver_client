@@ -10,8 +10,6 @@ defmodule WebDriverClient.W3CWireProtocolClient.Commands.FetchTimeouts do
   alias WebDriverClient.W3CWireProtocolClient.UnexpectedResponseError
   alias WebDriverClient.W3CWireProtocolClient.WebDriverError
 
-  @type timeouts :: map
-
   @spec send_request(Session.t()) :: {:ok, HTTPResponse.t()} | {:error, ConnectionError.t()}
   def send_request(%Session{id: id, config: %Config{} = config}) do
     client = TeslaClientBuilder.build_simple(config)
@@ -27,7 +25,7 @@ defmodule WebDriverClient.W3CWireProtocolClient.Commands.FetchTimeouts do
   end
 
   @spec parse_response(HTTPResponse.t()) ::
-          {:ok, timeouts} | {:error, UnexpectedResponseError.t() | WebDriverError.t()}
+          {:ok, HTTPResponse.t()} | {:error, UnexpectedResponseError.t() | WebDriverError.t()}
   def parse_response(%HTTPResponse{} = http_response) do
     with {:ok, w3c_response} <- ResponseParser.parse_response(http_response),
          :ok <- ResponseParser.ensure_successful_response(w3c_response),
