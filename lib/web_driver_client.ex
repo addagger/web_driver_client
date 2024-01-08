@@ -89,6 +89,44 @@ defmodule WebDriverClient do
   end
 
   @doc """
+  Returns session's timeouts
+  """
+  doc_metadata subject: :sessions
+  @spec fetch_timeouts(Session.t()) :: {:ok, url} | {:error, reason}
+  def fetch_timeouts(%Session{config: %Config{protocol: protocol}} = session) do
+    with {:ok, http_response} <-
+           send_request_for_protocol(protocol,
+             # jwp: fn -> JWPCommands.FetchTimeouts.send_request(session) end,
+             w3c: fn -> W3CCommands.FetchTimeouts.send_request(session) end
+           ) do
+      parse_with_fallbacks(http_response, protocol,
+        # jwp: &JWPCommands.FetchTimeouts.parse_response/1,
+        w3c: &W3CCommands.FetchTimeouts.parse_response/1
+      )
+    end
+  end
+  
+  @doc """
+  Sets session's timeouts
+  """
+  doc_metadata subject: :sessions
+  @spec set_timeouts(Session.t(), url) :: :ok | {:error, reason}
+
+  def set_timeouts(%Session{config: %Config{protocol: protocol}} = session, timeouts)
+      when is_map(timeouts) do
+    with {:ok, http_response} <-
+           send_request_for_protocol(protocol,
+             # jwp: fn -> JWPCommands.SetTimeouts.send_request(session, timeouts) end,
+             w3c: fn -> W3CCommands.SetTimeouts.send_request(session, timeouts) end
+           ) do
+      parse_with_fallbacks(http_response, protocol,
+        # jwp: &JWPCommands.SetTimeouts.parse_response/1,
+        w3c: &W3CCommands.SetTimeouts.parse_response/1
+      )
+    end
+  end
+
+  @doc """
   Navigates the browser to the given url
   """
   doc_metadata subject: :navigation
