@@ -19,7 +19,7 @@ defmodule WebDriverClient.W3CWireProtocolClient.Commands.SetTimeouts do
 
     case Tesla.post(client, url, timeouts) do
       {:ok, env} ->
-        {:ok, HTTPResponse.build(env)}
+        {:ok, timeouts}
 
       {:error, reason} ->
         {:error, reason}
